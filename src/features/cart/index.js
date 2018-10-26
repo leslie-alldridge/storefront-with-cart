@@ -1,6 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+const sort = items => {
+  return items.sort((a, b) => {
+    if (a.id !== b.id) {
+      return a.id - b.id;
+    }
+  });
+};
+
 function Cart(props) {
   return (
     <table>
@@ -13,17 +21,24 @@ function Cart(props) {
         </tr>
       </thead>
       <tbody>
-        {props.cart.map(item => {
-          <tr>
-            <td> {item.name}</td>
-            <td> {item.quantity}</td>
-            <td>
-              <button onClick={e => props.addToCart()}>+</button>
-            </td>
-            <td>
-              <button onClick={e => props.removeFromCart()}>-</button>
-            </td>
-          </tr>;
+        {sort(props.cart).map(item => {
+          return (
+            <tr>
+              <td> {item.name}</td>
+              <td> {item.quantity}</td>
+              <td>
+                <button onClick={e => props.addToCart(item)}>+</button>
+              </td>
+              <td>
+                <button onClick={e => props.removeFromCart(item)}>-</button>
+              </td>
+              <td>
+                <button onClick={e => props.removeAllFromCart(item)}>
+                  Remove all
+                </button>
+              </td>
+            </tr>
+          );
         })}
       </tbody>
     </table>
@@ -43,6 +58,9 @@ function mapDispatchToProps(dispatch) {
     },
     removeFromCart: item => {
       dispatch({ type: 'REMOVE', payload: item });
+    },
+    removeAllFromCart: item => {
+      dispatch({ type: 'REMOVE_ALL', payload: item });
     }
   };
 }
